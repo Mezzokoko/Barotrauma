@@ -16,7 +16,7 @@ namespace Barotrauma
         public string[] ToStringArray() => ToStringEnumerable().ToArray();
         public bool HasAnyTagsAtAll() => TagIdentifiers.Count > 0;
         public bool HasTag(StringIdentifier Tag) => TagIdentifiers.Contains(Tag);
-        public bool HasTag(string TagString) => return TagIdentifiers.Select(Tag => Tag.IdentifierString).Contains(TagString);
+        public bool HasTag(string TagString) => TagIdentifiers.Select(Tag => Tag.IdentifierString).Contains(TagString);
         public bool HasAnyTag(StringTags OtherTags) => HasAnyTag(OtherTags.TagIdentifiers);
         public bool HasAnyTag(IEnumerable<StringIdentifier> Tags) => Tags.Any(Tag => HasTag(Tag));
         public bool HasAnyTag(IEnumerable<string> TagsStrings) => TagsStrings.Any(Tag => HasTag(Tag));
