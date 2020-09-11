@@ -2086,7 +2086,7 @@ namespace Barotrauma
             {
                 order = orders[i];
                 disableNode = !CanSomeoneHearCharacter() ||
-                    (order.MustSetTarget && (order.ItemComponentType != null || order.ItemIdentifiers.Length > 0) && order.GetMatchingItems(true).None());
+                    (order.MustSetTarget && (order.ItemComponentType != null || order.ItemIdentifiers.HasAnyTagsAtAll()) && order.GetMatchingItems(true).None());
                 optionNodes.Add(new Tuple<GUIComponent, Keys>(
                     CreateOrderNode(nodeSize, commandFrame.RectTransform, offsets[i].ToPoint(), order, (i + 1) % 10, disableNode: disableNode, checkIfOrderCanBeHeard: false),
                     !disableNode ? Keys.D0 + (i + 1) % 10 : Keys.None));
@@ -2105,7 +2105,7 @@ namespace Barotrauma
                 {
                     foreach (Order p in Order.PrefabList)
                     {
-                        if ((p.ItemIdentifiers.Length > 0 && (p.ItemIdentifiers.Contains(itemContext.Prefab.Identifier) || itemContext.ItemTags.HasAnyTag(p.ItemIdentifiers))) ||
+                        if ((p.ItemIdentifiers.HasAnyTagsAtAll() && (p.ItemIdentifiers.HasTag(itemContext.Prefab.MapEntityIdentifier) || itemContext.ItemTags.HasAnyTag(p.ItemIdentifiers))) ||
                             (p.ItemComponentType != null && itemContext.Components.Any(c => c?.GetType() == p.ItemComponentType)))
                         {
                             contextualOrders.Add(p.HasOptions ? p :
@@ -2118,8 +2118,8 @@ namespace Barotrauma
                     var operateWeaponsPrefab = Order.GetPrefab(orderIdentifier);
                     if (contextualOrders.None(o => o.Identifier.Equals(orderIdentifier)) && itemContext.Components.Any(c => c is Controller))
                     {
-                        var turret = itemContext.GetConnectedComponents<Turret>().FirstOrDefault(c => operateWeaponsPrefab.ItemIdentifiers.Contains(c.Item.Prefab.Identifier)) ??
-                            itemContext.GetConnectedComponents<Turret>(recursive: true).FirstOrDefault(c => operateWeaponsPrefab.ItemIdentifiers.Contains(c.Item.Prefab.Identifier));
+                        var turret = itemContext.GetConnectedComponents<Turret>().FirstOrDefault(c => operateWeaponsPrefab.ItemIdentifiers.HasTag(c.Item.Prefab.MapEntityIdentifier)) ??
+                            itemContext.GetConnectedComponents<Turret>(recursive: true).FirstOrDefault(c => operateWeaponsPrefab.ItemIdentifiers.HasTag(c.Item.Prefab.MapEntityIdentifier));
                         if (turret != null) { contextualOrders.Add(new Order(operateWeaponsPrefab, turret.Item, turret, Character.Controlled)); }
                     }
 
@@ -2188,15 +2188,15 @@ namespace Barotrauma
 
         public static bool DoesItemHaveContextualOrders(Item item)
         {
-            if (Order.PrefabList.Any(o => o.ItemIdentifiers.Length > 0 && o.ItemIdentifiers.Contains(item.Prefab.Identifier))) { return true; }
+            if (Order.PrefabList.Any(o => o.ItemIdentifiers.HasAnyTagsAtAll() && o.ItemIdentifiers.HasTag(item.Prefab.MapEntityIdentifier))) { return true; }
             if (Order.PrefabList.Any(o => item.ItemTags.HasAnyTag(o.ItemIdentifiers))) { return true; }
             if (Order.PrefabList.Any(o => o.ItemComponentType != null && item.Components.Any(c => c?.GetType() == o.ItemComponentType))) { return true; }
 
             if (item.Repairables.Any()) { return true; }
             var operateWeaponsPrefab = Order.GetPrefab("operateweapons");
             return item.Components.Any(c => c is Controller) &&
-                (item.GetConnectedComponents<Turret>().Any(c => operateWeaponsPrefab.ItemIdentifiers.Contains(c.Item.Prefab.Identifier)) ||
-                 item.GetConnectedComponents<Turret>(recursive: true).Any(c => operateWeaponsPrefab.ItemIdentifiers.Contains(c.Item.Prefab.Identifier))); 
+                (item.GetConnectedComponents<Turret>().Any(c => operateWeaponsPrefab.ItemIdentifiers.HasTag(c.Item.Prefab.MapEntityIdentifier)) ||
+                 item.GetConnectedComponents<Turret>(recursive: true).Any(c => operateWeaponsPrefab.ItemIdentifiers.HasTag(c.Item.Prefab.MapEntityIdentifier)));
         }
 
         private GUIButton CreateOrderNode(Point size, RectTransform parent, Point offset, Order order, int hotkey, bool disableNode = false, bool checkIfOrderCanBeHeard = true)

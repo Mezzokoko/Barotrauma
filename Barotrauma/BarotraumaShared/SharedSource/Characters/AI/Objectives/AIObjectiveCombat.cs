@@ -198,7 +198,7 @@ namespace Barotrauma
                         }
                         break;
                     case CombatMode.Arrest:
-                        if (HumanAIController.HasItem(Enemy, "handlocker", out _, requireEquipped: true))
+                        if (HumanAIController.HasItem(Enemy, StringIdentifier.Handlocker, out _, requireEquipped: true))
                         {
                             IsCompleted = true;
                         }
@@ -639,7 +639,7 @@ namespace Barotrauma
             if (followTargetObjective == null) { return; }
             if (Mode == CombatMode.Arrest && Enemy.Stun > 2)
             {
-                if (HumanAIController.HasItem(character, "handlocker", out Item handCuffs))
+                if (HumanAIController.HasItem(character, StringIdentifier.Handlocker, out Item handCuffs))
                 {
                     if (!arrestingRegistered)
                     {
@@ -682,7 +682,7 @@ namespace Barotrauma
 
         private void OnArrestTargetReached()
         {
-            if (HumanAIController.HasItem(character, "handlocker", out Item handCuffs) && Enemy.Stun > 0 && character.CanInteractWith(Enemy))
+            if (HumanAIController.HasItem(character, StringIdentifier.Handlocker, out Item handCuffs) && Enemy.Stun > 0 && character.CanInteractWith(Enemy))
             {
                 if (HumanAIController.TryToMoveItem(handCuffs, Enemy.Inventory))
                 {

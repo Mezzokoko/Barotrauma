@@ -6,24 +6,24 @@ namespace Barotrauma
 {
     class AIObjectiveFindDivingGear : AIObjective
     {
-        public override string DebugTag => $"find diving gear ({gearTag})";
+        public override string DebugTag => $"find diving gear ({gearTag.IdentifierString})";
         public override bool ForceRun => true;
         public override bool KeepDivingGearOn => true;
 
-        private readonly string gearTag;
-        private readonly string fallbackTag;
+        private readonly StringIdentifier gearTag;
+        private readonly StringIdentifier fallbackTag;
 
         private AIObjectiveGetItem getDivingGear;
         private AIObjectiveContainItem getOxygen;
 
         public static float lowOxygenThreshold = 10;
 
-        protected override bool Check() => HumanAIController.HasItem(character, gearTag, out _, "oxygensource", requireEquipped: true) || HumanAIController.HasItem(character, fallbackTag, out _, "oxygensource", requireEquipped: true);
+        protected override bool Check() => HumanAIController.HasItem(character, gearTag, out _, StringIdentifier.OxygenSource, requireEquipped: true) || HumanAIController.HasItem(character, fallbackTag, out _, StringIdentifier.OxygenSource, requireEquipped: true);
 
         public AIObjectiveFindDivingGear(Character character, bool needDivingSuit, AIObjectiveManager objectiveManager, float priorityModifier = 1) : base(character, objectiveManager, priorityModifier)
         {
-            gearTag = needDivingSuit ? "divingsuit" : "divingmask";
-            fallbackTag = needDivingSuit ? "divingsuit" : "diving";
+            gearTag = needDivingSuit ? StringIdentifier.DivingSuit : StringIdentifier.DivingMask;
+            fallbackTag = needDivingSuit ? StringIdentifier.DivingSuit : StringIdentifier.Diving;
         }
 
         protected override void Act(float deltaTime)
@@ -46,7 +46,7 @@ namespace Barotrauma
                     {
                         character.Speak(TextManager.Get("DialogGetDivingGear"), null, 0.0f, "getdivinggear", 30.0f);
                     }
-                    return new AIObjectiveGetItem(character, gearTag, objectiveManager, equip: true) { AllowToFindDivingGear = false };
+                    return new AIObjectiveGetItem(character, gearTag.IdentifierString, objectiveManager, equip: true) { AllowToFindDivingGear = false };
                 }, 
                 onAbandon: () => Abandon = true,
                 onCompleted: () => RemoveSubObjective(ref getDivingGear));

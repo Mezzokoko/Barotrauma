@@ -987,14 +987,19 @@ namespace Barotrauma
         /// <summary>
         /// Check whether the character has a diving suit in usable condition plus some oxygen.
         /// </summary>
-        public static bool HasDivingSuit(Character character, float conditionPercentage = 0) => HasItem(character, "divingsuit", out _, "oxygensource", conditionPercentage, requireEquipped: true);
+        public static bool HasDivingSuit(Character character, float conditionPercentage = 0) => HasItem(character, StringIdentifier.DivingSuit, out _, StringIdentifier.OxygenSource, conditionPercentage, requireEquipped: true);
 
         /// <summary>
         /// Check whether the character has a diving mask in usable condition plus some oxygen.
         /// </summary>
-        public static bool HasDivingMask(Character character, float conditionPercentage = 0) => HasItem(character, "divingmask", out _, "oxygensource", conditionPercentage, requireEquipped: true);
+        public static bool HasDivingMask(Character character, float conditionPercentage = 0) => HasItem(character, StringIdentifier.DivingMask, out _, StringIdentifier.OxygenSource, conditionPercentage, requireEquipped: true);
 
-        public static bool HasItem(Character character, string tagOrIdentifier, out Item item, string containedTag = null, float conditionPercentage = 0, bool requireEquipped = false)
+        public static bool HasItem(Character character, StringIdentifier tagOrIdentifier, out Item item, float conditionPercentage = 0, bool requireEquipped = false)
+        {
+            //Structs cant be default paramters apparently, so we have to cheat with an overload
+            return HasItem(character, tagOrIdentifier, out item, StringIdentifier.Empty, conditionPercentage, requireEquipped);
+        }
+        public static bool HasItem(Character character, StringIdentifier tagOrIdentifier, out Item item, StringIdentifier containedTag, float conditionPercentage = 0, bool requireEquipped = false)
         {
             item = null;
             if (character == null) { return false; }
@@ -1003,7 +1008,7 @@ namespace Barotrauma
             return item != null &&
                 item.ConditionPercentage >= conditionPercentage &&
                 (!requireEquipped || character.HasEquippedItem(item)) &&
-                (containedTag == null ||
+                (containedTag == StringIdentifier.Empty ||
                 (item.ContainedItems != null &&
                 item.ContainedItems.Any(i => i.ItemTags.HasTag(containedTag) && i.ConditionPercentage > conditionPercentage)));
         }

@@ -14,12 +14,10 @@ namespace Barotrauma
 
         public IEnumerable<string> ToStringEnumerable() => TagIdentifiers.Select(Tag => Tag.IdentifierString);
         public string[] ToStringArray() => ToStringEnumerable().ToArray();
+        public bool HasAnyTagsAtAll() => TagIdentifiers.Count > 0;
         public bool HasTag(StringIdentifier Tag) => TagIdentifiers.Contains(Tag);
-        public bool HasTag(string TagString)
-        {
-            DebugConsole.Log("Tagstring: " + TagString);
-            return TagIdentifiers.Select(Tag => Tag.IdentifierString).Contains(TagString);
-        }
+        public bool HasTag(string TagString) => return TagIdentifiers.Select(Tag => Tag.IdentifierString).Contains(TagString);
+        public bool HasAnyTag(StringTags OtherTags) => HasAnyTag(OtherTags.TagIdentifiers);
         public bool HasAnyTag(IEnumerable<StringIdentifier> Tags) => Tags.Any(Tag => HasTag(Tag));
         public bool HasAnyTag(IEnumerable<string> TagsStrings) => TagsStrings.Any(Tag => HasTag(Tag));
 
@@ -51,7 +49,7 @@ namespace Barotrauma
             get => string.Join(",", TagIdentifiers.Select(TagId => TagId.IdentifierString));
             set
             {
-                Reset();
+                TagIdentifiers.Clear();
 
                 if (PrefabTags != null)
                 {
@@ -70,8 +68,10 @@ namespace Barotrauma
                 }
             }
         }
-        public void Reset() => TagIdentifiers.Clear();
-
+        public StringTags(string TagsString) : this()
+        {
+            AllTagsString = TagsString;
+        }
         public StringTags()
         {
             TagIdentifiers = new HashSet<StringIdentifier>();

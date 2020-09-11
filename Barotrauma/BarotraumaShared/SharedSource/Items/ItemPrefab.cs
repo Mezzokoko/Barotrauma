@@ -635,8 +635,6 @@ namespace Barotrauma
                 TagAttribute = element.Attribute("Tags");
             }
 
-            Tags = new StringTags();
-
             Tags.AllTagsString = TagAttribute != null ? TagAttribute.Value : "";
 
             if (element.Attribute("cargocontainername") != null)

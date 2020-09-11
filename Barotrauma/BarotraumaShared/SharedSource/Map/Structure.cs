@@ -916,7 +916,7 @@ namespace Barotrauma
 #if CLIENT
             if (playSound)
             {
-                SoundPlayer.PlayDamageSound(attack.StructureSoundType, damageAmount, worldPosition, tags: StructureTags.TagIdentifiers.Select(t => t.IdentifierString));
+                SoundPlayer.PlayDamageSound(attack.StructureSoundType, damageAmount, worldPosition, tags: StructureTags.ToStringEnumerable());
             }
 #endif
 

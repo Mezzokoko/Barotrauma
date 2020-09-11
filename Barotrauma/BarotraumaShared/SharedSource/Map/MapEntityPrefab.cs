@@ -99,7 +99,7 @@ namespace Barotrauma
 
         public ContentPackage ContentPackage { get; protected set; }
 
-        public StringTags Tags;
+        public StringTags Tags = new StringTags();
 
         public static MapEntityPrefab Selected
         {

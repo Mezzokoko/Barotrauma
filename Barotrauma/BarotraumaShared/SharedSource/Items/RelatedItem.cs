@@ -22,8 +22,6 @@ namespace Barotrauma
 
         public bool IgnoreInEditor { get; set; }
 
-        private string[] excludedIdentifiers;
-
         private RelationType type;
 
         public List<StatusEffect> statusEffects;
@@ -37,70 +35,38 @@ namespace Barotrauma
             get { return type; }
         }
 
-        public string JoinedIdentifiers
-        {
-            get { return string.Join(",", Identifiers.ToStringArray()); }
-            set
-            {
-                if (value == null) return;
-
-                string[] IdentifiersArr = value.Split(',');
-                for (int i = 0; i < IdentifiersArr.Length; i++)
-                {
-                    IdentifiersArr[i] = IdentifiersArr[i].Trim().ToLowerInvariant();
-                }
-
-                Identifiers.Reset();
-                IdentifiersArr.ForEach(Id => Identifiers.AddTag(Id));
-            }
-
-        }
-
         public StringTags Identifiers;
 
-        public string JoinedExcludedIdentifiers
-        {
-            get { return string.Join(",", excludedIdentifiers); }
-            set
-            {
-                if (value == null) return;
+        public StringTags ExcludedIdentifiers;
 
-                excludedIdentifiers = value.Split(',');
-                for (int i = 0; i < excludedIdentifiers.Length; i++)
-                {
-                    excludedIdentifiers[i] = excludedIdentifiers[i].Trim().ToLowerInvariant();
-                }
-            }
+        public string JoinedIdentifiers
+        {
+            get => Identifiers.AllTagsString;
+            set => Identifiers.AllTagsString = value;
         }
+
+        public string JoinedExcludedIdentifiers => ExcludedIdentifiers.AllTagsString;
 
         public bool MatchesItem(Item item)
         {
             if (item == null) { return false; }
-            if (excludedIdentifiers.Any(id => item.Prefab.Identifier == id || item.ItemTags.HasTag(id))) { return false; }
+            if (ExcludedIdentifiers.TagIdentifiers.Any(id => item.Prefab.MapEntityIdentifier == id || item.ItemTags.HasTag(id))) { return false; }
             return Identifiers.TagIdentifiers.Any(id => item.Prefab.MapEntityIdentifier == id || item.ItemTags.HasTag(id));
         }
         public bool MatchesItem(ItemPrefab itemPrefab)
         {
             if (itemPrefab == null) { return false; }
-            if (excludedIdentifiers.Any(id => itemPrefab.Identifier == id || itemPrefab.Tags.HasTag(id))) { return false; }
+            if (ExcludedIdentifiers.TagIdentifiers.Any(id => itemPrefab.MapEntityIdentifier == id || itemPrefab.Tags.HasTag(id))) { return false; }
             return Identifiers.TagIdentifiers.Any(id => itemPrefab.MapEntityIdentifier == id || itemPrefab.Tags.HasTag(id));
         }
 
         public RelatedItem(string[] identifiers, string[] excludedIdentifiers)
         {
-            for (int i = 0; i < identifiers.Length; i++)
-            {
-                identifiers[i] = identifiers[i].Trim().ToLowerInvariant();
-            }
-
             Identifiers = new StringTags();
             identifiers.ForEach(Id => Identifiers.AddTag(Id));
 
-            for (int i = 0; i < excludedIdentifiers.Length; i++)
-            {
-                excludedIdentifiers[i] = excludedIdentifiers[i].Trim().ToLowerInvariant();
-            }
-            this.excludedIdentifiers = excludedIdentifiers;
+            ExcludedIdentifiers = new StringTags();
+            excludedIdentifiers.ForEach(Id => ExcludedIdentifiers.AddTag(Id));
 
             statusEffects = new List<StatusEffect>();
         }
@@ -166,7 +132,7 @@ namespace Barotrauma
                 new XAttribute("optional", IsOptional),
                 new XAttribute("ignoreineditor", IgnoreInEditor));
 
-            if (excludedIdentifiers.Length > 0)
+            if (ExcludedIdentifiers.HasAnyTagsAtAll())
             {
                 element.Add(new XAttribute("excludedidentifiers", JoinedExcludedIdentifiers));
             }

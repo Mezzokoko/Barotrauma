@@ -418,16 +418,24 @@ namespace Barotrauma
 
         public Item FindItemByTag(string tag, bool recursive = false)
         {
-            StringIdentifier Tag = new StringIdentifier(tag);
+            return FindItemByTag(new StringIdentifier(tag), recursive);
+        }
 
+        public Item FindItemByTag(StringIdentifier tag, bool recursive = false)
+        {
             if (tag == null) { return null; }
-            return FindItem(i => i.ItemTags.HasTag(Tag), recursive);
+            return FindItem(i => i.ItemTags.HasTag(tag), recursive);
         }
 
         public Item FindItemByIdentifier(string identifier, bool recursive = false)
         {
+            return FindItemByIdentifier(new StringIdentifier(identifier), recursive);
+        }
+
+        public Item FindItemByIdentifier(StringIdentifier identifier, bool recursive = false)
+        {
             if (identifier == null) return null;
-            return FindItem(i => i.Prefab.Identifier == identifier, recursive);
+            return FindItem(i => i.Prefab.MapEntityIdentifier == identifier, recursive);
         }
 
         public virtual void RemoveItem(Item item)

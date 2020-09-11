@@ -45,6 +45,13 @@ namespace Barotrauma
         public static StringIdentifier Character = new StringIdentifier("character");
         public static StringIdentifier Chair = new StringIdentifier("chair");
         public static StringIdentifier Inner = new StringIdentifier("inner");
+        public static StringIdentifier ReactorFuel = new StringIdentifier("reactorfuel");
+        public static StringIdentifier Diving = new StringIdentifier("diving");
+        public static StringIdentifier DivingSuit = new StringIdentifier("divingsuit");
+        public static StringIdentifier DivingMask = new StringIdentifier("divingmask");
+        public static StringIdentifier OxygenSource = new StringIdentifier("oxygensource");
+        public static StringIdentifier Handlocker = new StringIdentifier("handlocker");
+        public static StringIdentifier Ballast = new StringIdentifier("ballast");
 
         public StringIdentifier(string IdentifierString)
         {

@@ -165,7 +165,7 @@ namespace Barotrauma
                 {
                     if (string.IsNullOrEmpty(itemPrefab.Name)) continue;
                     string text = $"- {itemPrefab.Name}";
-                    if (itemPrefab.Tags.TagIdentifiers.Any())
+                    if (itemPrefab.Tags.HasAnyTagsAtAll())
                     {
                         text += $" ({itemPrefab.Tags.AllTagsString})";
                     }

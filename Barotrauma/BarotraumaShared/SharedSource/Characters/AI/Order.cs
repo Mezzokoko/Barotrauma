@@ -3,8 +3,8 @@ using Barotrauma.Items.Components;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Barotrauma
 {
@@ -59,7 +59,8 @@ namespace Barotrauma
         public readonly Sprite SymbolSprite;
 
         public readonly Type ItemComponentType;
-        public readonly string[] ItemIdentifiers;
+
+        public StringTags ItemIdentifiers;
 
         public readonly string Identifier;
 
@@ -217,7 +218,7 @@ namespace Barotrauma
                 }
             }
 
-            ItemIdentifiers = orderElement.GetAttributeStringArray("targetitemidentifiers", new string[0], trim: true, convertToLowerInvariant: true);
+            ItemIdentifiers = new StringTags(orderElement.GetAttributeString("targetitemidentifiers", ""));
             color = orderElement.GetAttributeColor("color");
             FadeOutTime = orderElement.GetAttributeFloat("fadeouttime", 0.0f);
             UseController = orderElement.GetAttributeBool("usecontroller", false);
@@ -288,7 +289,7 @@ namespace Barotrauma
             Name                = prefab.Name;
             Identifier          = prefab.Identifier;
             ItemComponentType   = prefab.ItemComponentType;
-            ItemIdentifiers     = prefab.ItemIdentifiers;
+            ItemIdentifiers = prefab.ItemIdentifiers;
             Options             = prefab.Options;
             SymbolSprite        = prefab.SymbolSprite;
             Color               = prefab.Color;
@@ -360,10 +361,10 @@ namespace Barotrauma
         {
             List<Item> matchingItems = new List<Item>();
             if (submarine == null) { return matchingItems; }
-            if (ItemComponentType != null || ItemIdentifiers.Length > 0)
+            if (ItemComponentType != null || ItemIdentifiers.HasAnyTagsAtAll())
             {
-                matchingItems = ItemIdentifiers.Length > 0 ?
-                    Item.ItemList.FindAll(it => ItemIdentifiers.Contains(it.Prefab.Identifier) || it.ItemTags.HasAnyTag(ItemIdentifiers)) :
+                matchingItems = ItemIdentifiers.HasAnyTagsAtAll() ?
+                    Item.ItemList.FindAll(it => ItemIdentifiers.HasTag(it.Prefab.MapEntityIdentifier) || it.ItemTags.HasAnyTag(ItemIdentifiers)) :
                     Item.ItemList.FindAll(it => it.Components.Any(ic => ic.GetType() == ItemComponentType));
                 if (mustBelongToPlayerSub)
                 {
